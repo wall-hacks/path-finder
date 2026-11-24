@@ -1,0 +1,14 @@
+# build output
+build*/
+cmake-build-*/
+
+# editors
+.idea/
+.vscode/
+*.swp
+
+# compiled files
+*.o
+*.a
+*.so
+*.exe
