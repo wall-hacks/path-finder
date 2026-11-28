@@ -22,3 +22,21 @@ jobs:
         run: ctest --test-dir build --output-on-failure
       - name: Run the example
         run: ./build/pathfinder --map maps/maze.map --start 1,1 --goal 10,7
+  sanitizers: # AddressSanitizer and UndefinedBehaviorSanitizer
+    name: ASan + UBSan
+    runs-on: ubuntu-latest
+    env:
+      ASAN_OPTIONS: detect_leaks=1:abort_on_error=1
+      UBSAN_OPTIONS: print_stacktrace=1:halt_on_error=1
+    steps:
+      - uses: actions/checkout/@v4
+      - name: Configure
+        run: >
+          cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_COMPILER=clang++
+          "-DCMAKE_CXX_FLAGS=-fsanitize=address,undefined -fno-omit-frame-pointer -fno-sanitize-recover=all"
+      - name: Build
+        run: cmake --build build -j
+      - name: Test
+        run: ctest --test-dir build --output-on-failure
+      - name: Run the example
+        run: ./build/pathfinder --map maps/maze.map --start 1,1 --goal 10,7
